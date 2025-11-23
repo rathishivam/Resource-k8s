@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-user-sa
+  namespace: dev
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::694152115765:role/DevUserEKSRole

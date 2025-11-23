@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: dev           # ✅ Add namespace if MySQL is in 'dev'
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: rathijaat001/message-app:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MYSQL_HOST
+              value: mysql.dev.svc.cluster.local   # ✅ MySQL Service DNS inside same cluster
+            - name: MYSQL_USER
+              value: admin                         # ✅ match your MySQL user
+            - name: MYSQL_PASSWORD
+              value: admin                         # ✅ match your secret/config
+            - name: MYSQL_DB
+              value: mydb
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: dev          # ✅ Match namespace
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 80
+      targetPort: 5000
+  type: ClusterIP         # ✅ Default, internal only
