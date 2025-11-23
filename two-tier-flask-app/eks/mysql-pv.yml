@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-pv-dev
+  name: mysql-pv
+  namespace: dev
   labels:
     app: mysql
     env: dev
@@ -11,14 +12,15 @@ spec:
   accessModes:
     - ReadWriteOnce 
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: gp3          # Add this line
   hostPath:
-    path: /mnt/data/mysql
+    path: /mnt/dev/data/mysql
     type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pvc-dev
+  name: mysql-pvc
   namespace: dev
   labels:
     app: mysql
@@ -30,4 +32,4 @@ spec:
     requests:
       storage: 2Gi
   volumeName: mysql-pv-dev
-  storageClassName: manual
+  storageClassName: gp3          # Make it same as PV
